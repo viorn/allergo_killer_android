@@ -2,6 +2,7 @@ package com.allergokiller.android.fragments.map
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,21 @@ class AddHotbedDialog: DialogFragment() {
             val vm by activity.viewModels<AddHotbedDialogViewModel>()
             vm.init(point)
             return AddHotbedDialog()
+        }
+    }
+
+    class Test1(val id: Int) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Test1) return false
+
+            if (id != other.id) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return 0
         }
     }
 

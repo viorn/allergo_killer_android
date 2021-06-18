@@ -20,14 +20,20 @@ class MapFragmentViewModel(
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val _hotbedsList = MutableLiveData<List<Hotbed>>(emptyList())
-    val hotbedsList: LiveData<List<Hotbed>> get() = _hotbedsList
+    private val _state = MutableLiveData<MapFragmentState>(MapFragmentState())
+    val state: LiveData<MapFragmentState> get() = _state
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                _hotbedsList.value = it
+                setHotbedsList(it)
             }.addTo(compositeDisposable)
+    }
+
+    private fun setHotbedsList(list: List<Hotbed>) {
+        _state.value = state.value?.copy(
+            hotbedList = list
+        )
     }
 
 

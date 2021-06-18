@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,11 +34,14 @@ class MapFragment : Fragment(), MapEventsReceiver {
 
     private val vm by activityViewModels<MapFragmentViewModel>()
 
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
-
     private var mLocationOverlay: MyLocationNewOverlay? = null
 
     private var sfpo: SimpleFastPointOverlay? = null
+
+    private val permissionResult =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,18 +76,19 @@ class MapFragment : Fragment(), MapEventsReceiver {
         val overlayEvents = MapEventsOverlay(context, this);
         map.overlays.add(overlayEvents)
 
-        requestPermissionsIfNecessary(
+
+        permissionResult.launch(
             arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
-        );
+        )
 
-        vm.hotbedsList.observe(this.viewLifecycleOwner, {
+        vm.state.observe(this.viewLifecycleOwner, { state ->
             val oldSfpo = sfpo
 
-            val pt = SimplePointTheme(it.map {
-                LabelledGeoPoint(it.position.lat, it.position.lng, "Point #" + it.id)
+            val pt = SimplePointTheme(state.hotbedList.map { hotbed ->
+                LabelledGeoPoint(hotbed.position.lat, hotbed.position.lng, "Point #" + hotbed.id)
             }, true)
 
             val textStyle = Paint()
@@ -121,48 +127,14 @@ class MapFragment : Fragment(), MapEventsReceiver {
         super.onPause()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        val permissionsToRequest: ArrayList<String?> = ArrayList()
-        for (i in grantResults.indices) {
-            permissionsToRequest.add(permissions[i])
-        }
-        if (permissionsToRequest.size > 0) {
-            requestPermissions(
-                permissionsToRequest.toArray(arrayOfNulls(0)),
-                REQUEST_PERMISSIONS_REQUEST_CODE
-            )
-        }
-    }
-
-    private fun requestPermissionsIfNecessary(permissions: Array<String>) {
-        val permissionsToRequest: ArrayList<String> = ArrayList()
-        for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(this.requireContext(), permission)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                // Permission is not granted
-                permissionsToRequest.add(permission)
-            }
-        }
-        if (permissionsToRequest.size > 0) {
-            requestPermissions(
-                permissionsToRequest.toArray(arrayOfNulls(0)),
-                REQUEST_PERMISSIONS_REQUEST_CODE
-            )
-        }
-    }
-
     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
 
         return false
     }
 
     override fun longPressHelper(p: GeoPoint?): Boolean {
-        val fragment = AddHotbedDialog.init(requireActivity(), Point(lat = p!!.latitude, lng = p!!.longitude))
+        val fragment =
+            AddHotbedDialog.init(requireActivity(), Point(lat = p!!.latitude, lng = p!!.longitude))
         fragment.show(childFragmentManager, "add_hotbed_dialog")
         fragment.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST) { s, b ->
             val title = b.getString("title")!!
