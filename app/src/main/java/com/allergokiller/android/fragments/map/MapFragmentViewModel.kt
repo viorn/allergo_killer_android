@@ -1,6 +1,7 @@
 package com.allergokiller.android.fragments.map
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.allergokiller.android.App
@@ -11,6 +12,7 @@ import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.rxkotlin.addTo
 
 class MapFragmentViewModel(
@@ -20,8 +22,8 @@ class MapFragmentViewModel(
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val _state = MutableLiveData<MapFragmentState>(MapFragmentState())
-    val state: LiveData<MapFragmentState> get() = _state
+    private val _state = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
+    val state: LiveData<MapFragmentState> get() = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
@@ -31,8 +33,10 @@ class MapFragmentViewModel(
     }
 
     private fun setHotbedsList(list: List<Hotbed>) {
-        _state.value = state.value?.copy(
-            hotbedList = list
+        _state.onNext(
+            _state.value?.copy(
+                hotbedList = list
+            )
         )
     }
 
