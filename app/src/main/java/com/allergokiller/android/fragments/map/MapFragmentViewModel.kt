@@ -23,7 +23,7 @@ class MapFragmentViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     private val _state = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
-    val state: LiveData<MapFragmentState> get() = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
+    val state: LiveData<MapFragmentState> = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
