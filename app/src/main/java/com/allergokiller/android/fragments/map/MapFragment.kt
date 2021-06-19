@@ -14,7 +14,8 @@ import com.allergokiller.android.App
 import com.allergokiller.android.R
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.events.MessageEvent
-import com.allergokiller.android.factories.map.IHotbedOSMOverlayFactory
+import com.allergokiller.android.factories.map.HotbedPoint
+import com.allergokiller.android.factories.map.PointClickListener
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -90,11 +91,11 @@ class MapFragment : Fragment(), MapEventsReceiver {
         vm.state.observe(this.viewLifecycleOwner, { state ->
             val oldSfpo = sfpo
 
-            sfpo = hotbedOverlayFactory.buildOverlay(state.hotbedList, object : IHotbedOSMOverlayFactory.PointClickListener {
-                override fun onClickListener(point: IHotbedOSMOverlayFactory.DataGeoPoint) {
+            sfpo = hotbedOverlayFactory.buildOverlay(state.hotbedList, object : PointClickListener {
+                override fun onClickListener(point: HotbedPoint) {
                     Toast.makeText(
                         context,
-                        "You clicked " + point.data,
+                        "You clicked " + point.hotbed,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

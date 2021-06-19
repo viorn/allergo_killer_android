@@ -9,7 +9,7 @@ import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 
 class HotbedOSMOverlayFactory : IHotbedOSMOverlayFactory {
     override fun buildOverlay(hotbedList: List<Hotbed>,
-                              clickListener: IHotbedOSMOverlayFactory.PointClickListener?): SimpleFastPointOverlay {
+                              clickListener: PointClickListener?): SimpleFastPointOverlay {
         val pt = SimplePointTheme(hotbedList.map { hotbed ->
             IHotbedOSMOverlayFactory.DataGeoPoint(
                 hotbed.position.lat,
