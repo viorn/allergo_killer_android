@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import com.allergokiller.android.R
 import com.allergokiller.android.data.entity.Point
+import com.allergokiller.android.events.MessageEvent
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -83,6 +84,12 @@ class MapFragment : Fragment(), MapEventsReceiver {
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         )
+
+        vm.events.observe(this.viewLifecycleOwner, { event ->
+            if (event is MessageEvent) {
+                Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
+            }
+        })
 
         vm.state.observe(this.viewLifecycleOwner, { state ->
             val oldSfpo = sfpo

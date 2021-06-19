@@ -30,21 +30,6 @@ class AddHotbedDialog: DialogFragment() {
         }
     }
 
-    class Test1(val id: Int) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is Test1) return false
-
-            if (id != other.id) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return 0
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.MyDialog)
@@ -62,26 +47,29 @@ class AddHotbedDialog: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.pointLiveDate.observe(this, {
-            tv_coords.text = "${it.lat}\n${it.lng}"
+        vm.state.observe(this, { state ->
+            tv_coords.text = "${state.point!!.lat}\n${state.point!!.lng}"
         })
 
         iv_close.setOnClickListener {
             dismiss()
         }
 
+        et_name.setText( vm.state.value?.title ?: "")
+        et_description.setText( vm.state.value?.description ?: "")
+
         et_name.addTextChangedListener {
-            vm.titleLiveData.value = it.toString()
+            vm.setTitle(it?.toString() ?: "")
         }
 
         et_description.addTextChangedListener {
-            vm.bodyLiveData.value = it.toString()
+            vm.setDescription(it?.toString()?:"")
         }
 
         btn_add.setOnClickListener {
             setFragmentResult(RESULT_REQUEST, Bundle().apply {
-                putString("title", vm.titleLiveData.value)
-                putString("body", vm.bodyLiveData.value)
+                putString("title", vm.state.value!!.title)
+                putString("body", vm.state.value!!.description)
             })
             dismiss()
         }

@@ -2,17 +2,20 @@ package com.allergokiller.android.fragments.map
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Hotbed
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.data.gateway.IHotbedGateway
+import com.allergokiller.android.events.ErrorEvent
+import com.allergokiller.android.events.Event
+import com.allergokiller.android.events.MessageEvent
 import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.processors.BehaviorProcessor
+import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 
 class MapFragmentViewModel(
@@ -24,6 +27,9 @@ class MapFragmentViewModel(
 
     private val _state = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
     val state: LiveData<MapFragmentState> = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
+
+    private val _events = PublishProcessor.create<Event>()
+    val events: LiveData<Event> = LiveDataReactiveStreams.fromPublisher(_events)
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
@@ -49,7 +55,10 @@ class MapFragmentViewModel(
             ),
             10000.0
         ).subscribe { result, error ->
-            error?.printStackTrace()
+            if (error!=null) {
+                error.printStackTrace()
+                _events.onNext(ErrorEvent(error.message?:"error", error))
+            }
         }.addTo(compositeDisposable)
     }
 
@@ -61,7 +70,12 @@ class MapFragmentViewModel(
             body
         ).observeOn(AndroidSchedulers.mainThread())
             .subscribe { result, error ->
-
+                if (error!=null) {
+                    error.printStackTrace()
+                    _events.onNext(ErrorEvent(error.message?:"error", error))
+                } else {
+                    _events.onNext(MessageEvent("Точка добавлена"))
+                }
             }.addTo(compositeDisposable)
     }
 
