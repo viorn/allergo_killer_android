@@ -15,7 +15,7 @@ import okhttp3.Route
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RestModule::class, DataModule::class, UseCaseModule::class, MapFactoriesModule::class])
+@Component(modules = [RestModule::class, DataModule::class, UseCaseModule::class, MapFactoriesModule::class, CiceroneModule::class])
 interface AppComponent {
     fun addHotbedInteractor(): IAddHotbedInteractor
     fun findHotbedInteractor(): IFindHotbedByCircleInteractor
