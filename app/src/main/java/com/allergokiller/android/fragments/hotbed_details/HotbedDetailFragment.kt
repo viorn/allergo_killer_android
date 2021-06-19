@@ -1,6 +1,7 @@
 package com.allergokiller.android.fragments.hotbed_details
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +12,23 @@ import androidx.fragment.app.activityViewModels
 import com.allergokiller.android.R
 import com.allergokiller.android.fragments.map.AddHotbedDialogViewModel
 import com.allergokiller.android.fragments.map.MapFragmentViewModel
+import kotlinx.android.parcel.Parcelize
 
-class HotbedDetailFragment: Fragment() {
+class HotbedDetailFragment : Fragment() {
     private val vm by activityViewModels<HotbedDetailViewModel>()
 
+    @Parcelize
+    data class Params(
+        val hotbedId: Long
+    ) : Parcelable
+
     companion object {
-        fun init(activity: FragmentActivity, hotbedId: Long): HotbedDetailFragment {
-            val vm by activity.viewModels<HotbedDetailViewModel>()
-            vm.init(hotbedId)
-            return HotbedDetailFragment()
+        fun init(params: Params): HotbedDetailFragment {
+            return HotbedDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable("params", params)
+                }
+            }
         }
     }
 

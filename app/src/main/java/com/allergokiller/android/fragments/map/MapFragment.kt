@@ -34,7 +34,7 @@ class MapFragment : Fragment(), MapEventsReceiver {
 
     private var sfpo: Overlay? = null
 
-    private val hotbedOverlayFactory get() = App.appComponent!!.hotbedOverlayFactory()
+    private val hotbedOverlayFactory get() = App.appComponent.hotbedOverlayFactory()
 
     private val permissionResult =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -126,12 +126,11 @@ class MapFragment : Fragment(), MapEventsReceiver {
 
     override fun longPressHelper(p: GeoPoint?): Boolean {
         val fragment =
-            AddHotbedDialog.init(requireActivity(), Point(lat = p!!.latitude, lng = p!!.longitude))
+            AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude))
         fragment.show(childFragmentManager, "add_hotbed_dialog")
         fragment.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST) { s, b ->
-            val title = b.getString("title")!!
-            val body = b.getString("body")!!
-            vm.addHotbed(title, body, lat = p.latitude, lng = p.longitude)
+            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
+            vm.addHotbed(result.title, result.description, lat = p.latitude, lng = p.longitude)
         }
         return true
     }

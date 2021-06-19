@@ -16,16 +16,24 @@ import java.util.*
 class AddHotbedDialogViewModel() : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val _state = BehaviorProcessor.createDefault<AddHotbedDialogState>(AddHotbedDialogState())
-    val state: LiveData<AddHotbedDialogState> = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
+    private val _state =
+        BehaviorProcessor.createDefault<AddHotbedDialogState>(AddHotbedDialogState())
+    val state: LiveData<AddHotbedDialogState> =
+        LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
 
     fun init(point: Point) {
-        _state.onNext(AddHotbedDialogState(point = point))
+        if (state.value!!.point != point)
+            _state.onNext(AddHotbedDialogState(point = point))
+    }
+
+    fun reset() {
+        _state.onNext(AddHotbedDialogState())
     }
 
     fun setTitle(title: String) {
         _state.onNext(_state.value!!.copy(title = title))
     }
+
     fun setDescription(description: String) {
         _state.onNext(_state.value!!.copy(description = description))
     }

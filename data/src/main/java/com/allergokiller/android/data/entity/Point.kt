@@ -1,6 +1,6 @@
 package com.allergokiller.android.data.entity
 
-data class Point(
+class Point(
     val lat: Double,
     val lng: Double
 )

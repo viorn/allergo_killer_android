@@ -2,6 +2,7 @@ package com.allergokiller.android.fragments.map
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,21 +15,38 @@ import androidx.lifecycle.LiveData
 import com.allergokiller.android.R
 import com.allergokiller.android.tools.observer
 import com.allergokiller.android.data.entity.Point
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.diaglo_add_hotbed.*
+import java.io.Serializable
 
-class AddHotbedDialog: DialogFragment() {
+class AddHotbedDialog() : DialogFragment() {
 
     private val vm by activityViewModels<AddHotbedDialogViewModel>()
+
+    @Parcelize
+    data class Params(
+        val lat: Double, val lng: Double
+    ) : Parcelable
+
+    @Parcelize
+    data class Result(
+        val title: String,
+        val description: String
+    ) : Parcelable
 
     companion object {
         val RESULT_REQUEST = "add_hotbed_dialog"
 
-        fun init(activity: FragmentActivity,point: Point):AddHotbedDialog {
-            val vm by activity.viewModels<AddHotbedDialogViewModel>()
-            vm.init(point)
-            return AddHotbedDialog()
+        fun init(params: Params): AddHotbedDialog {
+            return AddHotbedDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelable("params", params)
+                }
+            }
         }
     }
+
+    private val params get() = requireArguments().getParcelable<Params>("params")!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +65,9 @@ class AddHotbedDialog: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        vm.init(Point(lat = params.lat, lng = params.lng))
+
         vm.state.observe(this, { state ->
             tv_coords.text = "${state.point!!.lat}\n${state.point!!.lng}"
         })
@@ -55,21 +76,23 @@ class AddHotbedDialog: DialogFragment() {
             dismiss()
         }
 
-        et_name.setText( vm.state.value?.title ?: "")
-        et_description.setText( vm.state.value?.description ?: "")
+        et_name.setText(vm.state.value?.title ?: "")
+        et_description.setText(vm.state.value?.description ?: "")
 
         et_name.addTextChangedListener {
             vm.setTitle(it?.toString() ?: "")
         }
 
         et_description.addTextChangedListener {
-            vm.setDescription(it?.toString()?:"")
+            vm.setDescription(it?.toString() ?: "")
         }
 
         btn_add.setOnClickListener {
             setFragmentResult(RESULT_REQUEST, Bundle().apply {
-                putString("title", vm.state.value!!.title)
-                putString("body", vm.state.value!!.description)
+                putParcelable("result", Result(
+                    title = vm.state.value!!.title,
+                    description = vm.state.value!!.description
+                ))
             })
             dismiss()
         }
@@ -78,5 +101,6 @@ class AddHotbedDialog: DialogFragment() {
 
     override fun dismiss() {
         super.dismiss()
+        vm.reset()
     }
 }
