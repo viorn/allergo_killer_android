@@ -1,34 +1,28 @@
 package com.allergokiller.android.fragments.map
 
 import android.Manifest
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
+import com.allergokiller.android.App
 import com.allergokiller.android.R
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.events.MessageEvent
+import com.allergokiller.android.factories.map.IHotbedOSMOverlayFactory
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
-import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 
 
 class MapFragment : Fragment(), MapEventsReceiver {
@@ -37,7 +31,9 @@ class MapFragment : Fragment(), MapEventsReceiver {
 
     private var mLocationOverlay: MyLocationNewOverlay? = null
 
-    private var sfpo: SimpleFastPointOverlay? = null
+    private var sfpo: Overlay? = null
+
+    private val hotbedOverlayFactory get() = App.appComponent!!.hotbedOverlayFactory()
 
     private val permissionResult =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -94,28 +90,16 @@ class MapFragment : Fragment(), MapEventsReceiver {
         vm.state.observe(this.viewLifecycleOwner, { state ->
             val oldSfpo = sfpo
 
-            val pt = SimplePointTheme(state.hotbedList.map { hotbed ->
-                LabelledGeoPoint(hotbed.position.lat, hotbed.position.lng, "Point #" + hotbed.id)
-            }, true)
+            sfpo = hotbedOverlayFactory.buildOverlay(state.hotbedList, object : IHotbedOSMOverlayFactory.PointClickListener {
+                override fun onClickListener(point: IHotbedOSMOverlayFactory.DataGeoPoint) {
+                    Toast.makeText(
+                        context,
+                        "You clicked " + point.data,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
 
-            val textStyle = Paint()
-            textStyle.style = Paint.Style.FILL
-            textStyle.color = Color.parseColor("#0000ff")
-            textStyle.textAlign = Paint.Align.CENTER
-            textStyle.textSize = 24f
-            val opt = SimpleFastPointOverlayOptions.getDefaultStyle()
-                .setAlgorithm(SimpleFastPointOverlayOptions.RenderingAlgorithm.MAXIMUM_OPTIMIZATION)
-                .setRadius(7f).setIsClickable(true).setCellSize(15).setTextStyle(textStyle)
-
-            sfpo = SimpleFastPointOverlay(pt, opt)
-
-            sfpo!!.setOnClickListener { points, point ->
-                Toast.makeText(
-                    context,
-                    "You clicked " + (points[point] as LabelledGeoPoint).label,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
             if (oldSfpo != null) {
                 map.overlays.remove(oldSfpo)
             }
