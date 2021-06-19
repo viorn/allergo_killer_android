@@ -2,12 +2,13 @@ package com.allergokiller.android
 
 import android.app.Application
 import android.preference.PreferenceManager
+import com.github.terrakok.cicerone.Cicerone
 import org.osmdroid.config.Configuration
 
 class App : Application() {
-
     companion object {
-        var appComponent: AppComponent? = null
+        internal lateinit var appComponent: AppComponent
+            private set
     }
 
     override fun onCreate() {

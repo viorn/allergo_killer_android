@@ -58,6 +58,8 @@ dependencies {
 
     implementation group: 'android.arch.lifecycle', name: 'reactivestreams', version: '1.1.1'
 
+    implementation("com.github.terrakok:cicerone:7.0")
+
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
