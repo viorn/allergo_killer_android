@@ -18,7 +18,7 @@ abstract class AStateViewModel<S, A: Action> : ViewModel() {
         BehaviorProcessor.createDefault<S>(initState())
     val stateLiveData: LiveData<S> = LiveDataReactiveStreams.fromPublisher(stateBehavior.distinctUntilChanged())
     val state: S get() = stateBehavior.value!!
-    val stateFlowable: Flowable<S> = stateBehavior
+    val stateFlowable: Flowable<S> = stateBehavior.distinctUntilChanged()
 
     protected val actionPublish = PublishProcessor.create<A>()
     val actionsFlowable: Flowable<A> = actionPublish
