@@ -1,5 +1,7 @@
 package com.allergokiller.android.fragments.map
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
 import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Hotbed
@@ -26,11 +28,10 @@ class MapFragmentViewModel(
 
     private val stateBehavior =
         BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
-    val stateFlowable: Flowable<MapFragmentState> = stateBehavior.distinctUntilChanged()
-    val state: MapFragmentState get() = stateBehavior.value!!
+    val state: LiveData<MapFragmentState> = LiveDataReactiveStreams.fromPublisher(stateBehavior.distinctUntilChanged())
 
     private val eventsPublish = PublishProcessor.create<Event>()
-    val eventsFlowable: Flowable<Event> = eventsPublish
+    val events: LiveData<Event> = LiveDataReactiveStreams.fromPublisher(eventsPublish)
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())

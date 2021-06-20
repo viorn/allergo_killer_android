@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import com.allergokiller.android.App
 import com.allergokiller.android.R
 import com.allergokiller.android.events.MessageEvent
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
 import com.allergokiller.android.fragments.AFragment
+import com.allergokiller.android.tools.distinctUntilChanged
+import com.allergokiller.android.tools.map
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
@@ -87,20 +88,20 @@ class MapFragment : AFragment(), MapEventsReceiver {
             )
         )
 
-        vm.eventsFlowable.subscribe{ event ->
+        vm.events.observe(viewLifecycleOwner) { event ->
             if (event is MessageEvent) {
                 Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
             }
-        }.addTo(viewCompositeDisposable)
+        }
 
-        vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe {
-            fl_loading.visibility = if (it) View.VISIBLE else View.GONE
-        }.addTo(viewCompositeDisposable)
+        vm.state.map { it.loading }.distinctUntilChanged().observe(viewLifecycleOwner) { loading ->
+            fl_loading.visibility = if (loading) View.VISIBLE else View.GONE
+        }
 
-        vm.stateFlowable.subscribe { state ->
+        vm.state.map { it.hotbedList }.distinctUntilChanged().observe(viewLifecycleOwner) { hotbedList ->
             val oldSfpo = sfpo
 
-            sfpo = hotbedOverlayFactory.buildOverlay(state.hotbedList, object : PointClickListener {
+            sfpo = hotbedOverlayFactory.buildOverlay(hotbedList, object : PointClickListener {
                 override fun onClickListener(point: HotbedPoint) {
                     Toast.makeText(
                         context,
@@ -115,7 +116,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
             }
 
             map.overlays.add(sfpo!!)
-        }.addTo(viewCompositeDisposable)
+        }
     }
 
     override fun onResume() {
