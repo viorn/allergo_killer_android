@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import com.allergokiller.android.App
 import com.allergokiller.android.R
-import com.allergokiller.android.gactions.MessageAction
+import com.allergokiller.android.core.actions.MessageAction
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
 import com.allergokiller.android.core.AFragment

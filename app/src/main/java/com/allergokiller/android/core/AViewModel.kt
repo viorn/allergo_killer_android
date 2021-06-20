@@ -3,7 +3,7 @@ package com.allergokiller.android.core
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
-import com.allergokiller.android.gactions.Action
+import com.allergokiller.android.core.actions.Action
 import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.processors.PublishProcessor

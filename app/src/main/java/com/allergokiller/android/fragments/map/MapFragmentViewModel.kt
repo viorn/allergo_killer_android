@@ -4,9 +4,9 @@ import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Hotbed
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.data.gateway.IHotbedGateway
-import com.allergokiller.android.gactions.ErrorAction
-import com.allergokiller.android.gactions.Action
-import com.allergokiller.android.gactions.MessageAction
+import com.allergokiller.android.core.actions.ErrorAction
+import com.allergokiller.android.core.actions.Action
+import com.allergokiller.android.core.actions.MessageAction
 import com.allergokiller.android.core.AViewModel
 import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor

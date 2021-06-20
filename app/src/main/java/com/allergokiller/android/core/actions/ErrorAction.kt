@@ -1,4 +1,4 @@
-package com.allergokiller.android.gactions
+package com.allergokiller.android.core.actions
 
 class ErrorAction(
     override val message: String,

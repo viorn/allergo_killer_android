@@ -2,7 +2,7 @@ package com.allergokiller.android.fragments.map
 
 import android.net.Uri
 import com.allergokiller.android.data.entity.Point
-import com.allergokiller.android.gactions.Action
+import com.allergokiller.android.core.actions.Action
 import com.allergokiller.android.core.AViewModel
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
