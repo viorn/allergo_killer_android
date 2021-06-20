@@ -67,7 +67,7 @@ class AddHotbedDialog() : ADialogFragment() {
 
         vm.stateFlowable.subscribe { state ->
             tv_coords.text = "${state.point!!.lat}\n${state.point!!.lng}"
-        }.addTo(viewCompositeDisposable)
+        }.addTo(createViewCompositeDisposable)
 
         iv_close.setOnClickListener {
             dismiss()
