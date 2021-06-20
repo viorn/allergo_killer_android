@@ -14,7 +14,6 @@ import com.allergokiller.android.core.actions.MessageAction
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
 import com.allergokiller.android.core.AFragment
-import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -51,11 +50,16 @@ class MapFragment : AFragment(), MapEventsReceiver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        childFragmentManager.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST, viewLifecycleOwner) { s, b ->
-            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
-            vm.addHotbed(result.title, result.description, lat = result.lat, lng = result.lng)
-        }
+        requestPermission()
 
+        initListenerResultFromFragment()
+
+        initMap()
+
+        initSubscribeToViewModel()
+    }
+
+    private fun initMap() {
         map.setTileSource(TileSourceFactory.MAPNIK);
         this.mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         this.mLocationOverlay?.enableMyLocation()
@@ -63,7 +67,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
         map.controller.setZoom(18.0)
         mLocationOverlay?.runOnFirstFix {
-            view.post {
+            requireView().post {
                 vm.findByCenter(
                     mLocationOverlay?.myLocation?.latitude!!,
                     mLocationOverlay?.myLocation?.longitude!!
@@ -77,45 +81,51 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
         val overlayEvents = MapEventsOverlay(context, this);
         map.overlays.add(overlayEvents)
+    }
 
-
+    private fun requestPermission() {
         permissionResult.launch(
             arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         )
+    }
 
-        vm.actionsFlowable.subscribe { event ->
-            if (event is MessageAction) {
-                Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
-            }
-        }.addTo(createViewCompositeDisposable)
+    private fun initListenerResultFromFragment() {
+        childFragmentManager.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST, viewLifecycleOwner) { s, b ->
+            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
+            vm.addHotbed(result.title, result.description, lat = result.lat, lng = result.lng)
+        }
+    }
 
-
-        vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe { loading ->
-            fl_loading.visibility = if (loading) View.VISIBLE else View.GONE
-        }.addTo(createViewCompositeDisposable)
-
-        vm.stateFlowable.map { it.hotbedList }.distinctUntilChanged().subscribe { hotbedList ->
-            val oldSfpo = sfpo
-
-            sfpo = hotbedOverlayFactory.buildOverlay(hotbedList, object : PointClickListener {
-                override fun onClickListener(point: HotbedPoint) {
-                    Toast.makeText(
-                        context,
-                        "You clicked " + point.hotbed,
-                        Toast.LENGTH_SHORT
-                    ).show()
+    private fun initSubscribeToViewModel() {
+        createViewCompositeDisposable.addAll(
+            vm.actionsFlowable.subscribe { event ->
+                if (event is MessageAction) {
+                    Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
                 }
-            })
-
-            if (oldSfpo != null) {
-                map.overlays.remove(oldSfpo)
+            },
+            vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe { loading ->
+                fl_loading.visibility = if (loading) View.VISIBLE else View.GONE
+            },
+            vm.stateFlowable.map { it.hotbedList }.distinctUntilChanged().subscribe { hotbedList ->
+                val oldSfpo = sfpo
+                sfpo = hotbedOverlayFactory.buildOverlay(hotbedList, object : PointClickListener {
+                    override fun onClickListener(point: HotbedPoint) {
+                        Toast.makeText(
+                            context,
+                            "You clicked " + point.hotbed,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+                if (oldSfpo != null) {
+                    map.overlays.remove(oldSfpo)
+                }
+                map.overlays.add(sfpo!!)
             }
-
-            map.overlays.add(sfpo!!)
-        }.addTo(createViewCompositeDisposable)
+        )
     }
 
     override fun onResume() {
@@ -134,9 +144,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
     }
 
     override fun longPressHelper(p: GeoPoint?): Boolean {
-        val fragment =
-            AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude))
-        fragment.show(childFragmentManager, "add_hotbed_dialog")
+        AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude)).show(childFragmentManager, "add_hotbed_dialog")
         return true
     }
 }
