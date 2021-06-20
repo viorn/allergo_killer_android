@@ -7,7 +7,7 @@ import com.allergokiller.android.data.gateway.IHotbedGateway
 import com.allergokiller.android.core.actions.ErrorAction
 import com.allergokiller.android.core.actions.Action
 import com.allergokiller.android.core.actions.MessageAction
-import com.allergokiller.android.core.AViewModel
+import com.allergokiller.android.core.AStateViewModel
 import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,7 +18,7 @@ class MapFragmentViewModel(
     private val iAddHotbedInteractor: IAddHotbedInteractor = App.appComponent!!.addHotbedInteractor(),
     private val iFindHotbedByCircleInteractor: IFindHotbedByCircleInteractor = App.appComponent!!.findHotbedInteractor(),
     private val iHotbedGateway: IHotbedGateway = App.appComponent!!.hotbadGateway()
-) : AViewModel<MapFragmentState, Action>() {
+) : AStateViewModel<MapFragmentState, Action>() {
     private val compositeDisposable = CompositeDisposable()
 
     init {

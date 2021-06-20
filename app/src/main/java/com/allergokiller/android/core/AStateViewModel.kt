@@ -8,7 +8,10 @@ import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.processors.PublishProcessor
 
-abstract class AViewModel<S, A: Action> : ViewModel() {
+/**
+ * AStateViewModel is a viewmodel abstraction class that implements a single state and channel for one-time message approach
+ */
+abstract class AStateViewModel<S, A: Action> : ViewModel() {
     abstract fun initState(): S
 
     protected val stateBehavior =

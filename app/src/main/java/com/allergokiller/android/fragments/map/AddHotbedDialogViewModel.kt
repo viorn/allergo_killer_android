@@ -3,12 +3,12 @@ package com.allergokiller.android.fragments.map
 import android.net.Uri
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.core.actions.Action
-import com.allergokiller.android.core.AViewModel
+import com.allergokiller.android.core.AStateViewModel
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-class AddHotbedDialogViewModel() : AViewModel<AddHotbedDialogState, Action>() {
+class AddHotbedDialogViewModel() : AStateViewModel<AddHotbedDialogState, Action>() {
     private val compositeDisposable = CompositeDisposable()
 
     override fun initState() = AddHotbedDialogState()

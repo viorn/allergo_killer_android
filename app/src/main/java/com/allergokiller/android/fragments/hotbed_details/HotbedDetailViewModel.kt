@@ -1,9 +1,9 @@
 package com.allergokiller.android.fragments.hotbed_details
 
 import com.allergokiller.android.core.actions.Action
-import com.allergokiller.android.core.AViewModel
+import com.allergokiller.android.core.AStateViewModel
 
-class HotbedDetailViewModel : AViewModel<HotbedDetailState, Action>() {
+class HotbedDetailViewModel : AStateViewModel<HotbedDetailState, Action>() {
 
 
     fun init(hotbedId: Long) {
