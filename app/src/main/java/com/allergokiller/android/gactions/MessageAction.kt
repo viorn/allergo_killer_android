@@ -1,11 +1,11 @@
-package com.allergokiller.android.events
+package com.allergokiller.android.gactions
 
-open class MessageEvent(
+open class MessageAction(
     open val message: String
-): Event {
+): Action {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is MessageEvent) return false
+        if (other !is MessageAction) return false
 
         if (message != other.message) return false
 

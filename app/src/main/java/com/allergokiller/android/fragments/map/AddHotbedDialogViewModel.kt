@@ -1,22 +1,17 @@
 package com.allergokiller.android.fragments.map
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import com.allergokiller.android.data.entity.Point
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import com.allergokiller.android.gactions.Action
+import com.allergokiller.android.core.AViewModel
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.processors.BehaviorProcessor
 import java.util.concurrent.TimeUnit
 
-class AddHotbedDialogViewModel() : ViewModel() {
+class AddHotbedDialogViewModel() : AViewModel<AddHotbedDialogState, Action>() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val stateBehavior =
-        BehaviorProcessor.createDefault<AddHotbedDialogState>(AddHotbedDialogState())
-    val stateFlowable: Flowable<AddHotbedDialogState> = stateBehavior.distinctUntilChanged()
-    val state: AddHotbedDialogState get() = stateBehavior.value!!
+    override fun initState() = AddHotbedDialogState()
 
     fun init(point: Point) {
         if (stateBehavior.value!!.point == null || stateBehavior.value!!.point != point)
@@ -56,4 +51,5 @@ class AddHotbedDialogViewModel() : ViewModel() {
         compositeDisposable.clear()
         super.onCleared()
     }
+
 }

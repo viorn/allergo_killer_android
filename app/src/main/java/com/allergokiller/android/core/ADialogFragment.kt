@@ -1,4 +1,4 @@
-package com.allergokiller.android.fragments
+package com.allergokiller.android.core
 
 import android.os.Bundle
 import android.view.View

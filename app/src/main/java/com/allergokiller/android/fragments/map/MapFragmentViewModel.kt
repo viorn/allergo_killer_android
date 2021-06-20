@@ -1,37 +1,25 @@
 package com.allergokiller.android.fragments.map
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.ViewModel
 import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Hotbed
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.data.gateway.IHotbedGateway
-import com.allergokiller.android.events.ErrorEvent
-import com.allergokiller.android.events.Event
-import com.allergokiller.android.events.MessageEvent
+import com.allergokiller.android.gactions.ErrorAction
+import com.allergokiller.android.gactions.Action
+import com.allergokiller.android.gactions.MessageAction
+import com.allergokiller.android.core.AViewModel
 import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
-import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.processors.BehaviorProcessor
-import io.reactivex.processors.PublishProcessor
 import io.reactivex.rxkotlin.addTo
 
 class MapFragmentViewModel(
     private val iAddHotbedInteractor: IAddHotbedInteractor = App.appComponent!!.addHotbedInteractor(),
     private val iFindHotbedByCircleInteractor: IFindHotbedByCircleInteractor = App.appComponent!!.findHotbedInteractor(),
     private val iHotbedGateway: IHotbedGateway = App.appComponent!!.hotbadGateway()
-) : ViewModel() {
+) : AViewModel<MapFragmentState, Action>() {
     private val compositeDisposable = CompositeDisposable()
-
-    private val stateBehavior =
-        BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
-    val state: LiveData<MapFragmentState> = LiveDataReactiveStreams.fromPublisher(stateBehavior.distinctUntilChanged())
-
-    private val eventsPublish = PublishProcessor.create<Event>()
-    val events: LiveData<Event> = LiveDataReactiveStreams.fromPublisher(eventsPublish)
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
@@ -40,6 +28,9 @@ class MapFragmentViewModel(
             }.addTo(compositeDisposable)
     }
 
+
+    override fun initState() = MapFragmentState()
+
     private fun setHotbedsList(list: List<Hotbed>) {
         stateBehavior.onNext(
             stateBehavior.value?.copy(
@@ -47,7 +38,6 @@ class MapFragmentViewModel(
             )
         )
     }
-
 
     fun findByCenter(lat: Double, lng: Double) {
         stateBehavior.onNext(stateBehavior.value!!.copy(loading = true))
@@ -63,7 +53,7 @@ class MapFragmentViewModel(
             }.subscribe { result, error ->
                 if (error != null) {
                     error.printStackTrace()
-                    eventsPublish.onNext(ErrorEvent(error.message ?: "error", error))
+                    actionPublish.onNext(ErrorAction(error.message ?: "error", error))
                 }
             }.addTo(compositeDisposable)
     }
@@ -81,9 +71,9 @@ class MapFragmentViewModel(
             }.subscribe { result, error ->
                 if (error != null) {
                     error.printStackTrace()
-                    eventsPublish.onNext(ErrorEvent(error.message ?: "error", error))
+                    actionPublish.onNext(ErrorAction(error.message ?: "error", error))
                 } else {
-                    eventsPublish.onNext(MessageEvent("Точка добавлена"))
+                    actionPublish.onNext(MessageAction("Точка добавлена"))
                 }
             }.addTo(compositeDisposable)
     }

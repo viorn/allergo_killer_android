@@ -1,12 +1,12 @@
-package com.allergokiller.android.events
+package com.allergokiller.android.gactions
 
-class ErrorEvent(
+class ErrorAction(
     override val message: String,
     val throwable: Throwable? = null
-): MessageEvent(message), Event {
+): MessageAction(message), Action {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ErrorEvent) return false
+        if (other !is ErrorAction) return false
 
         if (message != other.message) return false
         if (throwable != other.throwable) return false

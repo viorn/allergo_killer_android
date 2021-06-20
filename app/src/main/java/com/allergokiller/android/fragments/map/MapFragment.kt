@@ -10,12 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import com.allergokiller.android.App
 import com.allergokiller.android.R
-import com.allergokiller.android.events.MessageEvent
+import com.allergokiller.android.gactions.MessageAction
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
-import com.allergokiller.android.fragments.AFragment
-import com.allergokiller.android.tools.distinctUntilChanged
-import com.allergokiller.android.tools.map
+import com.allergokiller.android.core.AFragment
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
@@ -88,17 +86,18 @@ class MapFragment : AFragment(), MapEventsReceiver {
             )
         )
 
-        vm.events.observe(viewLifecycleOwner) { event ->
-            if (event is MessageEvent) {
+        vm.actionsFlowable.subscribe { event ->
+            if (event is MessageAction) {
                 Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
             }
-        }
+        }.addTo(createViewCompositeDisposable)
 
-        vm.state.map { it.loading }.distinctUntilChanged().observe(viewLifecycleOwner) { loading ->
+
+        vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe { loading ->
             fl_loading.visibility = if (loading) View.VISIBLE else View.GONE
-        }
+        }.addTo(createViewCompositeDisposable)
 
-        vm.state.map { it.hotbedList }.distinctUntilChanged().observe(viewLifecycleOwner) { hotbedList ->
+        vm.stateFlowable.map { it.hotbedList }.distinctUntilChanged().subscribe { hotbedList ->
             val oldSfpo = sfpo
 
             sfpo = hotbedOverlayFactory.buildOverlay(hotbedList, object : PointClickListener {
@@ -116,7 +115,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
             }
 
             map.overlays.add(sfpo!!)
-        }
+        }.addTo(createViewCompositeDisposable)
     }
 
     override fun onResume() {
