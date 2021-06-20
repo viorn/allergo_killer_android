@@ -24,7 +24,8 @@ class MapFragmentViewModel(
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val stateBehavior = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
+    private val stateBehavior =
+        BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
     val stateFlowable: Flowable<MapFragmentState> = stateBehavior.distinctUntilChanged()
     val state: MapFragmentState get() = stateBehavior.value!!
 
@@ -48,31 +49,38 @@ class MapFragmentViewModel(
 
 
     fun findByCenter(lat: Double, lng: Double) {
+        stateBehavior.onNext(stateBehavior.value!!.copy(loading = true))
         iFindHotbedByCircleInteractor.run(
             Point(
                 lat = lat,
                 lng = lng
             ),
             10000.0
-        ).subscribe { result, error ->
-            if (error!=null) {
-                error.printStackTrace()
-                eventsPublish.onNext(ErrorEvent(error.message?:"error", error))
-            }
-        }.addTo(compositeDisposable)
+        ).observeOn(AndroidSchedulers.mainThread())
+            .doFinally {
+                stateBehavior.onNext(stateBehavior.value!!.copy(loading = false))
+            }.subscribe { result, error ->
+                if (error != null) {
+                    error.printStackTrace()
+                    eventsPublish.onNext(ErrorEvent(error.message ?: "error", error))
+                }
+            }.addTo(compositeDisposable)
     }
 
     fun addHotbed(title: String, body: String, lat: Double, lng: Double) {
+        stateBehavior.onNext(stateBehavior.value!!.copy(loading = true))
         iAddHotbedInteractor.run(
             lat,
             lng,
             title,
             body
         ).observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result, error ->
-                if (error!=null) {
+            .doFinally {
+                stateBehavior.onNext(stateBehavior.value!!.copy(loading = false))
+            }.subscribe { result, error ->
+                if (error != null) {
                     error.printStackTrace()
-                    eventsPublish.onNext(ErrorEvent(error.message?:"error", error))
+                    eventsPublish.onNext(ErrorEvent(error.message ?: "error", error))
                 } else {
                     eventsPublish.onNext(MessageEvent("Точка добавлена"))
                 }

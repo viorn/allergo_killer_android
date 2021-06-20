@@ -59,11 +59,11 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
         map.controller.setZoom(18.0)
         mLocationOverlay?.runOnFirstFix {
-            vm.findByCenter(
-                mLocationOverlay?.myLocation?.latitude!!,
-                mLocationOverlay?.myLocation?.longitude!!
-            )
             view.post {
+                vm.findByCenter(
+                    mLocationOverlay?.myLocation?.latitude!!,
+                    mLocationOverlay?.myLocation?.longitude!!
+                )
                 map.controller.animateTo(mLocationOverlay?.myLocation)
             }
         }
@@ -86,6 +86,10 @@ class MapFragment : AFragment(), MapEventsReceiver {
             if (event is MessageEvent) {
                 Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
             }
+        }.addTo(viewCompositeDisposable)
+
+        vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe {
+            fl_loading.visibility = if (it) View.VISIBLE else View.GONE
         }.addTo(viewCompositeDisposable)
 
         vm.stateFlowable.subscribe { state ->
