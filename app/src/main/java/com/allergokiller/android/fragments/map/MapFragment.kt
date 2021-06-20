@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import com.allergokiller.android.App
 import com.allergokiller.android.R
-import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.events.MessageEvent
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
+import com.allergokiller.android.fragments.AFragment
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -26,7 +26,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 
-class MapFragment : Fragment(), MapEventsReceiver {
+class MapFragment : AFragment(), MapEventsReceiver {
 
     private val vm by activityViewModels<MapFragmentViewModel>()
 
@@ -82,13 +82,13 @@ class MapFragment : Fragment(), MapEventsReceiver {
             )
         )
 
-        vm.events.observe(this.viewLifecycleOwner, { event ->
+        vm.eventsFlowable.subscribe{ event ->
             if (event is MessageEvent) {
                 Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
             }
-        })
+        }.addTo(viewCompositeDisposable)
 
-        vm.state.observe(this.viewLifecycleOwner, { state ->
+        vm.stateFlowable.subscribe { state ->
             val oldSfpo = sfpo
 
             sfpo = hotbedOverlayFactory.buildOverlay(state.hotbedList, object : PointClickListener {
@@ -106,7 +106,7 @@ class MapFragment : Fragment(), MapEventsReceiver {
             }
 
             map.overlays.add(sfpo!!)
-        })
+        }.addTo(viewCompositeDisposable)
     }
 
     override fun onResume() {

@@ -1,25 +1,20 @@
 package com.allergokiller.android.fragments.map
 
-import android.app.Activity
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.*
-import androidx.lifecycle.LiveData
 import com.allergokiller.android.R
-import com.allergokiller.android.tools.observer
 import com.allergokiller.android.data.entity.Point
+import com.allergokiller.android.fragments.ADialogFragment
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.diaglo_add_hotbed.*
-import java.io.Serializable
 
-class AddHotbedDialog() : DialogFragment() {
+class AddHotbedDialog() : ADialogFragment() {
 
     private val vm by activityViewModels<AddHotbedDialogViewModel>()
 
@@ -68,16 +63,16 @@ class AddHotbedDialog() : DialogFragment() {
 
         vm.init(Point(lat = params.lat, lng = params.lng))
 
-        vm.state.observe(this, { state ->
+        vm.stateFlowable.subscribe { state ->
             tv_coords.text = "${state.point!!.lat}\n${state.point!!.lng}"
-        })
+        }.addTo(viewCompositeDisposable)
 
         iv_close.setOnClickListener {
             dismiss()
         }
 
-        et_name.setText(vm.state.value?.title ?: "")
-        et_description.setText(vm.state.value?.description ?: "")
+        et_name.setText(vm.title)
+        et_description.setText(vm.description)
 
         et_name.addTextChangedListener {
             vm.setTitle(it?.toString() ?: "")
@@ -90,17 +85,20 @@ class AddHotbedDialog() : DialogFragment() {
         btn_add.setOnClickListener {
             setFragmentResult(RESULT_REQUEST, Bundle().apply {
                 putParcelable("result", Result(
-                    title = vm.state.value!!.title,
-                    description = vm.state.value!!.description
+                    title = vm.title,
+                    description = vm.description
                 ))
             })
             dismiss()
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        vm.reset()
+    }
 
     override fun dismiss() {
         super.dismiss()
-        vm.reset()
     }
 }

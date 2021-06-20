@@ -1,7 +1,5 @@
 package com.allergokiller.android.fragments.map
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
 import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Hotbed
@@ -12,6 +10,7 @@ import com.allergokiller.android.events.Event
 import com.allergokiller.android.events.MessageEvent
 import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
 import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.processors.BehaviorProcessor
@@ -25,11 +24,12 @@ class MapFragmentViewModel(
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val _state = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
-    val state: LiveData<MapFragmentState> = LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
+    private val stateBehavior = BehaviorProcessor.createDefault<MapFragmentState>(MapFragmentState())
+    val stateFlowable: Flowable<MapFragmentState> = stateBehavior.distinctUntilChanged()
+    val state: MapFragmentState get() = stateBehavior.value!!
 
-    private val _events = PublishProcessor.create<Event>()
-    val events: LiveData<Event> = LiveDataReactiveStreams.fromPublisher(_events)
+    private val eventsPublish = PublishProcessor.create<Event>()
+    val eventsFlowable: Flowable<Event> = eventsPublish
 
     init {
         iHotbedGateway.getFlowLastSearchHotbedList().observeOn(AndroidSchedulers.mainThread())
@@ -39,8 +39,8 @@ class MapFragmentViewModel(
     }
 
     private fun setHotbedsList(list: List<Hotbed>) {
-        _state.onNext(
-            _state.value?.copy(
+        stateBehavior.onNext(
+            stateBehavior.value?.copy(
                 hotbedList = list
             )
         )
@@ -57,7 +57,7 @@ class MapFragmentViewModel(
         ).subscribe { result, error ->
             if (error!=null) {
                 error.printStackTrace()
-                _events.onNext(ErrorEvent(error.message?:"error", error))
+                eventsPublish.onNext(ErrorEvent(error.message?:"error", error))
             }
         }.addTo(compositeDisposable)
     }
@@ -72,9 +72,9 @@ class MapFragmentViewModel(
             .subscribe { result, error ->
                 if (error!=null) {
                     error.printStackTrace()
-                    _events.onNext(ErrorEvent(error.message?:"error", error))
+                    eventsPublish.onNext(ErrorEvent(error.message?:"error", error))
                 } else {
-                    _events.onNext(MessageEvent("Точка добавлена"))
+                    eventsPublish.onNext(MessageEvent("Точка добавлена"))
                 }
             }.addTo(compositeDisposable)
     }

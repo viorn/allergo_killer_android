@@ -1,42 +1,37 @@
 package com.allergokiller.android.fragments.map
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.allergokiller.android.App
 import com.allergokiller.android.data.entity.Point
-import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.processors.BehaviorProcessor
-import io.reactivex.rxkotlin.addTo
-import java.util.*
 
 class AddHotbedDialogViewModel() : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
-    private val _state =
+    private val stateBehavior =
         BehaviorProcessor.createDefault<AddHotbedDialogState>(AddHotbedDialogState())
-    val state: LiveData<AddHotbedDialogState> =
-        LiveDataReactiveStreams.fromPublisher(_state.distinctUntilChanged())
+    val stateFlowable: Flowable<AddHotbedDialogState> = stateBehavior.distinctUntilChanged()
 
     fun init(point: Point) {
-        if (state.value!!.point != point)
-            _state.onNext(AddHotbedDialogState(point = point))
+        if (stateBehavior.value!!.point == null || stateBehavior.value!!.point != point)
+            stateBehavior.onNext(AddHotbedDialogState(point = point))
     }
 
     fun reset() {
-        _state.onNext(AddHotbedDialogState())
+        stateBehavior.onNext(AddHotbedDialogState())
     }
 
     fun setTitle(title: String) {
-        _state.onNext(_state.value!!.copy(title = title))
+        stateBehavior.onNext(stateBehavior.value!!.copy(title = title))
     }
 
     fun setDescription(description: String) {
-        _state.onNext(_state.value!!.copy(description = description))
+        stateBehavior.onNext(stateBehavior.value!!.copy(description = description))
     }
+
+    val title: String get() = stateBehavior.value!!.title
+    val description: String get() = stateBehavior.value!!.description
 
     override fun onCleared() {
         compositeDisposable.clear()
