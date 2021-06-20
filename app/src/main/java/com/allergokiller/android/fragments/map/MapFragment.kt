@@ -52,6 +52,11 @@ class MapFragment : AFragment(), MapEventsReceiver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        childFragmentManager.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST, viewLifecycleOwner) { s, b ->
+            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
+            vm.addHotbed(result.title, result.description, lat = result.lat, lng = result.lng)
+        }
+
         map.setTileSource(TileSourceFactory.MAPNIK);
         this.mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         this.mLocationOverlay?.enableMyLocation()
@@ -132,11 +137,6 @@ class MapFragment : AFragment(), MapEventsReceiver {
         val fragment =
             AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude))
         fragment.show(childFragmentManager, "add_hotbed_dialog")
-        //TODO: отваливается после разворота экрана
-        fragment.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST) { s, b ->
-            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
-            vm.addHotbed(result.title, result.description, lat = p.latitude, lng = p.longitude)
-        }
         return true
     }
 }

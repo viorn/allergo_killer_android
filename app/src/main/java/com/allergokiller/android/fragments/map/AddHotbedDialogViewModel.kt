@@ -16,6 +16,7 @@ class AddHotbedDialogViewModel() : ViewModel() {
     private val stateBehavior =
         BehaviorProcessor.createDefault<AddHotbedDialogState>(AddHotbedDialogState())
     val stateFlowable: Flowable<AddHotbedDialogState> = stateBehavior.distinctUntilChanged()
+    val state: AddHotbedDialogState get() = stateBehavior.value!!
 
     fun init(point: Point) {
         if (stateBehavior.value!!.point == null || stateBehavior.value!!.point != point)

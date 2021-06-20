@@ -26,7 +26,9 @@ class AddHotbedDialog() : ADialogFragment() {
     @Parcelize
     data class Result(
         val title: String,
-        val description: String
+        val description: String,
+        val lat: Double,
+        val lng: Double
     ) : Parcelable
 
     companion object {
@@ -86,7 +88,9 @@ class AddHotbedDialog() : ADialogFragment() {
             setFragmentResult(RESULT_REQUEST, Bundle().apply {
                 putParcelable("result", Result(
                     title = vm.title,
-                    description = vm.description
+                    description = vm.description,
+                    lat = vm.state.point!!.lat,
+                    lng = vm.state.point!!.lng
                 ))
             })
             dismiss()
