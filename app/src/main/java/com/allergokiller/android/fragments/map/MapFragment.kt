@@ -132,6 +132,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
         val fragment =
             AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude))
         fragment.show(childFragmentManager, "add_hotbed_dialog")
+        //TODO: отваливается после разворота экрана
         fragment.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST) { s, b ->
             val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
             vm.addHotbed(result.title, result.description, lat = p.latitude, lng = p.longitude)
