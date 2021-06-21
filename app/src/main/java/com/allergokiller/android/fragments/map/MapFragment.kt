@@ -36,8 +36,7 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
     private var sfpo: Overlay? = null
 
-    @Inject
-    lateinit var hotbedOverlayFactory: IHotbedOSMOverlayFactory
+    private val hotbedOverlayFactory: IHotbedOSMOverlayFactory get() = fragmentComponent.hotbedOverlayFactory()
 
     private val permissionResult =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -54,9 +53,6 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fragmentComponent.inject(this)
-        fragmentComponent.inject(vm)
 
         requestPermission()
 

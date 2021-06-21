@@ -15,7 +15,7 @@ abstract class ADialogFragment: DialogFragment() {
     )
     val createViewCompositeDisposable = CompositeDisposable()
 
-    val viewModelProviderFactory: ViewModelProviderFactory get() = App.appComponent.viewModelProviderFactory()
+    val viewModelProviderFactory: ViewModelProviderFactory get() = fragmentComponent.viewModelProviderFactory()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -14,17 +14,17 @@ class MainActivity : AActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (savedInstanceState==null) {
-            App.appComponent.ciceroneRouter().newRootScreen(Screens.Main())
+            activityComponent.ciceroneRouter().newRootScreen(Screens.Main())
         }
     }
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        App.appComponent.ciceroneNavigatorHolder().setNavigator(navigator)
+        activityComponent.ciceroneNavigatorHolder().setNavigator(navigator)
     }
 
     override fun onPause() {
-        App.appComponent.ciceroneNavigatorHolder().removeNavigator()
+        activityComponent.ciceroneNavigatorHolder().removeNavigator()
         super.onPause()
     }
 }

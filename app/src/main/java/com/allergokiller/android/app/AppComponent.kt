@@ -35,15 +35,4 @@ class AppModule(val app: App) {
 @Component(modules = [AppModule::class, RestModule::class, DataModule::class, UseCaseModule::class, MapFactoriesModule::class, CiceroneModule::class, ViewModelFactoryModule::class])
 interface AppComponent {
     fun activityComponent(activityModule: ActivityModule): ActivityComponent
-
-    fun viewModelProviderFactory(): ViewModelProviderFactory
-
-    fun addHotbedInteractor(): IAddHotbedInteractor
-    fun findHotbedInteractor(): IFindHotbedByCircleInteractor
-    fun hotbadGateway(): IHotbedGateway
-
-    fun ciceroneNavigatorHolder(): NavigatorHolder
-    fun ciceroneRouter(): Router
-
-    fun hotbedOverlayFactory(): IHotbedOSMOverlayFactory
 }

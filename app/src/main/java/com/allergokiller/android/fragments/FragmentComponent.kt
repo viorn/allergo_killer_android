@@ -2,8 +2,12 @@ package com.allergokiller.android.fragments
 
 import android.content.Context
 import androidx.fragment.app.Fragment
+import com.allergokiller.android.core.ViewModelProviderFactory
+import com.allergokiller.android.factories.map.IHotbedOSMOverlayFactory
 import com.allergokiller.android.fragments.map.MapFragment
 import com.allergokiller.android.fragments.map.MapFragmentViewModel
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -25,6 +29,8 @@ class FragmentModule(val fragment: Fragment) {
 
 @Subcomponent(modules = [FragmentModule::class])
 interface FragmentComponent {
-    fun inject(fragment: MapFragment)
-    fun inject(vm: MapFragmentViewModel)
+    fun viewModelProviderFactory(): ViewModelProviderFactory
+    fun hotbedOverlayFactory(): IHotbedOSMOverlayFactory
+    fun ciceroneNavigatorHolder(): NavigatorHolder
+    fun ciceroneRouter(): Router
 }

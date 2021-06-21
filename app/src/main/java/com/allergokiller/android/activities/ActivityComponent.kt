@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import com.allergokiller.android.fragments.FragmentComponent
 import com.allergokiller.android.fragments.FragmentModule
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -26,4 +28,7 @@ class ActivityModule(val activity: Activity) {
 @Subcomponent(modules = [ActivityModule::class])
 interface ActivityComponent {
     fun fragmentComponent(fragmentModule: FragmentModule): FragmentComponent
+    fun viewModelProviderFactory(): ViewModelProviderFactory
+    fun ciceroneNavigatorHolder(): NavigatorHolder
+    fun ciceroneRouter(): Router
 }
