@@ -32,9 +32,11 @@ class AppModule(val app: App) {
 }
 
 @Singleton
-@Component(modules = [AppModule::class, RestModule::class, DataModule::class, UseCaseModule::class, MapFactoriesModule::class, CiceroneModule::class])
+@Component(modules = [AppModule::class, RestModule::class, DataModule::class, UseCaseModule::class, MapFactoriesModule::class, CiceroneModule::class, ViewModelFactoryModule::class])
 interface AppComponent {
     fun activityComponent(activityModule: ActivityModule): ActivityComponent
+
+    fun viewModelProviderFactory(): ViewModelProviderFactory
 
     fun addHotbedInteractor(): IAddHotbedInteractor
     fun findHotbedInteractor(): IFindHotbedByCircleInteractor

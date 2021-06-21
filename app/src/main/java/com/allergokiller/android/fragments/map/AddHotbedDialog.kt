@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.diaglo_add_hotbed.*
 
 class AddHotbedDialog() : ADialogFragment() {
 
-    private val vm by viewModels<AddHotbedDialogViewModel>()
+    private val vm by viewModels<AddHotbedDialogViewModel> { viewModelProviderFactory }
 
     @Parcelize
     data class Params(

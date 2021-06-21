@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.allergokiller.android.app.App
 import com.allergokiller.android.R
 import com.allergokiller.android.core.actions.MessageAction
+import com.allergokiller.android.factories.map.HotbedOSMOverlayFactory
 import com.allergokiller.android.factories.map.HotbedPoint
+import com.allergokiller.android.factories.map.IHotbedOSMOverlayFactory
 import com.allergokiller.android.factories.map.PointClickListener
 import com.allergokiller.android.fragments.AFragment
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -22,17 +25,19 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import javax.inject.Inject
 
 
 class MapFragment : AFragment(), MapEventsReceiver {
 
-    private val vm by activityViewModels<MapFragmentViewModel>()
+    private val vm by viewModels<MapFragmentViewModel> { viewModelProviderFactory }
 
     private var mLocationOverlay: MyLocationNewOverlay? = null
 
     private var sfpo: Overlay? = null
 
-    private val hotbedOverlayFactory get() = App.appComponent.hotbedOverlayFactory()
+    @Inject
+    lateinit var hotbedOverlayFactory: IHotbedOSMOverlayFactory
 
     private val permissionResult =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -49,6 +54,9 @@ class MapFragment : AFragment(), MapEventsReceiver {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fragmentComponent.inject(this)
+        fragmentComponent.inject(vm)
 
         requestPermission()
 
@@ -93,7 +101,10 @@ class MapFragment : AFragment(), MapEventsReceiver {
     }
 
     private fun initListenerResultFromFragment() {
-        childFragmentManager.setFragmentResultListener(AddHotbedDialog.RESULT_REQUEST, viewLifecycleOwner) { s, b ->
+        childFragmentManager.setFragmentResultListener(
+            AddHotbedDialog.RESULT_REQUEST,
+            viewLifecycleOwner
+        ) { s, b ->
             val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
             vm.addHotbed(result.title, result.description, lat = result.lat, lng = result.lng)
         }
@@ -103,7 +114,8 @@ class MapFragment : AFragment(), MapEventsReceiver {
         createViewCompositeDisposable.addAll(
             vm.actionsFlowable.subscribe { event ->
                 if (event is MessageAction) {
-                    Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MapFragment.activity, event.message, Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
             vm.stateFlowable.map { it.loading }.distinctUntilChanged().subscribe { loading ->
@@ -144,7 +156,8 @@ class MapFragment : AFragment(), MapEventsReceiver {
     }
 
     override fun longPressHelper(p: GeoPoint?): Boolean {
-        AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude)).show(childFragmentManager, "add_hotbed_dialog")
+        AddHotbedDialog.init(AddHotbedDialog.Params(lat = p!!.latitude, lng = p!!.longitude))
+            .show(childFragmentManager, "add_hotbed_dialog")
         return true
     }
 }

@@ -13,11 +13,12 @@ import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import javax.inject.Inject
 
-class MapFragmentViewModel(
-    private val iAddHotbedInteractor: IAddHotbedInteractor = App.appComponent!!.addHotbedInteractor(),
-    private val iFindHotbedByCircleInteractor: IFindHotbedByCircleInteractor = App.appComponent!!.findHotbedInteractor(),
-    private val iHotbedGateway: IHotbedGateway = App.appComponent!!.hotbadGateway()
+class MapFragmentViewModel @Inject constructor (
+    private val iAddHotbedInteractor: IAddHotbedInteractor,
+    private val iFindHotbedByCircleInteractor: IFindHotbedByCircleInteractor,
+    private val iHotbedGateway: IHotbedGateway
 ) : AStateViewModel<MapFragmentState, Action>() {
     private val compositeDisposable = CompositeDisposable()
 

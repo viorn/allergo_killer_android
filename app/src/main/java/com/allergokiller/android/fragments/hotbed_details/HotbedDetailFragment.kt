@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.allergokiller.android.R
 import com.allergokiller.android.fragments.AFragment
 import kotlinx.android.parcel.Parcelize
 
 class HotbedDetailFragment : AFragment() {
-    private val vm by activityViewModels<HotbedDetailViewModel>()
+    private val vm by viewModels<HotbedDetailViewModel> { viewModelProviderFactory }
 
     @Parcelize
     data class Params(

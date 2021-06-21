@@ -7,8 +7,9 @@ import com.allergokiller.android.core.AStateViewModel
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class AddHotbedDialogViewModel() : AStateViewModel<AddHotbedDialogState, Action>() {
+class AddHotbedDialogViewModel @Inject constructor() : AStateViewModel<AddHotbedDialogState, Action>() {
     private val compositeDisposable = CompositeDisposable()
 
     override fun initState() = AddHotbedDialogState()
