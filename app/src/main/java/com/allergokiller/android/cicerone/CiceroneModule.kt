@@ -1,4 +1,4 @@
-package com.allergokiller.android
+package com.allergokiller.android.cicerone
 
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.NavigatorHolder

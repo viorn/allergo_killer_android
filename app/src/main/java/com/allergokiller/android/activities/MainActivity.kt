@@ -1,23 +1,13 @@
-package com.allergokiller.android
+package com.allergokiller.android.activities
 
-import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelLazy
-import androidx.lifecycle.ViewModelProvider
-import com.allergokiller.android.fragments.map.MapFragment
-import com.github.terrakok.cicerone.Command
+import com.allergokiller.android.R
+import com.allergokiller.android.app.App
+import com.allergokiller.android.cicerone.Screens
 import com.github.terrakok.cicerone.androidx.AppNavigator
-import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AActivity() {
     private val navigator by lazy { AppNavigator(this, R.id.main_container) }
 
     override fun onCreate(savedInstanceState: Bundle?) {

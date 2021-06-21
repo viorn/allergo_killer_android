@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
-import com.allergokiller.android.App
+import com.allergokiller.android.app.App
 import com.allergokiller.android.R
 import com.allergokiller.android.core.actions.MessageAction
 import com.allergokiller.android.factories.map.HotbedPoint
 import com.allergokiller.android.factories.map.PointClickListener
-import com.allergokiller.android.core.AFragment
+import com.allergokiller.android.fragments.AFragment
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory

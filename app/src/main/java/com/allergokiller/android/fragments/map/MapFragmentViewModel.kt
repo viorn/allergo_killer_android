@@ -1,6 +1,6 @@
 package com.allergokiller.android.fragments.map
 
-import com.allergokiller.android.App
+import com.allergokiller.android.app.App
 import com.allergokiller.android.data.entity.Hotbed
 import com.allergokiller.android.data.entity.Point
 import com.allergokiller.android.data.gateway.IHotbedGateway

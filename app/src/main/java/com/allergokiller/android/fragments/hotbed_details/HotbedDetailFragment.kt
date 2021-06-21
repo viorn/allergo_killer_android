@@ -5,16 +5,12 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import com.allergokiller.android.R
-import com.allergokiller.android.fragments.map.AddHotbedDialogViewModel
-import com.allergokiller.android.fragments.map.MapFragmentViewModel
+import com.allergokiller.android.fragments.AFragment
 import kotlinx.android.parcel.Parcelize
 
-class HotbedDetailFragment : Fragment() {
+class HotbedDetailFragment : AFragment() {
     private val vm by activityViewModels<HotbedDetailViewModel>()
 
     @Parcelize

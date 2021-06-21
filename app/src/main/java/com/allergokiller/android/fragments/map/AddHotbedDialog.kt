@@ -9,7 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.*
 import com.allergokiller.android.R
 import com.allergokiller.android.data.entity.Point
-import com.allergokiller.android.core.ADialogFragment
+import com.allergokiller.android.fragments.ADialogFragment
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.diaglo_add_hotbed.*

@@ -1,8 +1,10 @@
-package com.allergokiller.android
+package com.allergokiller.android.app
 
 import android.app.Application
 import android.preference.PreferenceManager
-import com.github.terrakok.cicerone.Cicerone
+import com.allergokiller.android.core.AppComponent
+import com.allergokiller.android.core.AppModule
+import com.allergokiller.android.core.DaggerAppComponent
 import org.osmdroid.config.Configuration
 
 class App : Application() {
@@ -13,7 +15,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appComponent = DaggerAppComponent.builder().build()
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
 
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
     }
