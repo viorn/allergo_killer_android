@@ -15,4 +15,5 @@ dependencies {
     implementation group: 'com.google.dagger', name: 'dagger', version: '2.36'
     kapt 'com.google.dagger:dagger-compiler:2.36'
 
+    implementation project(":domain")
 }

@@ -1,4 +1,4 @@
-package com.allergokiller.android.data.entity
+package com.allergokiller.android.domain.entity
 
 data class Hotbed (
     val id: Long = -1,

@@ -1,6 +1,6 @@
-package com.allergokiller.android.usecases.hotbed
+package com.allergokiller.android.domain.usecases.hotbed
 
-import com.allergokiller.android.data.entity.Hotbed
+import com.allergokiller.android.domain.entity.Hotbed
 import io.reactivex.Single
 
 interface IAddHotbedInteractor {

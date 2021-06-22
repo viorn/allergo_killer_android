@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.*
 import com.allergokiller.android.R
-import com.allergokiller.android.data.entity.Point
+import com.allergokiller.android.domain.entity.Point
 import com.allergokiller.android.fragments.ADialogFragment
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.parcel.Parcelize

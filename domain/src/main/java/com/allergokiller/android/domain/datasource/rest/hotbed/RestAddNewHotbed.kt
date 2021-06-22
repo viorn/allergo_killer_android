@@ -1,6 +1,6 @@
-package com.allergokiller.android.data.datasource.rest.hotbed
+package com.allergokiller.android.domain.datasource.rest.hotbed
 
-import com.allergokiller.android.data.entity.Hotbed
+import com.allergokiller.android.domain.entity.Hotbed
 import io.reactivex.Single
 
 

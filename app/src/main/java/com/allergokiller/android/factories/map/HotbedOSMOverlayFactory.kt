@@ -2,7 +2,7 @@ package com.allergokiller.android.factories.map
 
 import android.graphics.Color
 import android.graphics.Paint
-import com.allergokiller.android.data.entity.Hotbed
+import com.allergokiller.android.domain.entity.Hotbed
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme

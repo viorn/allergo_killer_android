@@ -1,6 +1,6 @@
-package com.allergokiller.android.data.gateway
+package com.allergokiller.android.domain.gateway
 
-import com.allergokiller.android.data.entity.Hotbed
+import com.allergokiller.android.domain.entity.Hotbed
 import io.reactivex.Flowable
 import io.reactivex.Single
 

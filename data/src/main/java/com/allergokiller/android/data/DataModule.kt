@@ -1,9 +1,9 @@
 package com.allergokiller.android.data
 
-import com.allergokiller.android.data.datasource.rest.hotbed.RestAddNewHotbed
-import com.allergokiller.android.data.datasource.rest.hotbed.RestGetHotbedByCircle
 import com.allergokiller.android.data.gateway.HotbedGateway
-import com.allergokiller.android.data.gateway.IHotbedGateway
+import com.allergokiller.android.domain.gateway.IHotbedGateway
+import com.allergokiller.android.domain.datasource.rest.hotbed.RestAddNewHotbed
+import com.allergokiller.android.domain.datasource.rest.hotbed.RestGetHotbedByCircle
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler

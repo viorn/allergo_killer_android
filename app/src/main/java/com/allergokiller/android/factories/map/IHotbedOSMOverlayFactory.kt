@@ -1,6 +1,6 @@
 package com.allergokiller.android.factories.map
 
-import com.allergokiller.android.data.entity.Hotbed
+import com.allergokiller.android.domain.entity.Hotbed
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint
 

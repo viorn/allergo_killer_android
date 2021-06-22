@@ -1,15 +1,14 @@
 package com.allergokiller.android.fragments.map
 
-import com.allergokiller.android.app.App
-import com.allergokiller.android.data.entity.Hotbed
-import com.allergokiller.android.data.entity.Point
-import com.allergokiller.android.data.gateway.IHotbedGateway
+import com.allergokiller.android.domain.entity.Point
+import com.allergokiller.android.domain.gateway.IHotbedGateway
 import com.allergokiller.android.core.actions.ErrorAction
 import com.allergokiller.android.core.actions.Action
 import com.allergokiller.android.core.actions.MessageAction
 import com.allergokiller.android.core.AStateViewModel
-import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
-import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
+import com.allergokiller.android.domain.entity.Hotbed
+import com.allergokiller.android.domain.usecases.hotbed.IAddHotbedInteractor
+import com.allergokiller.android.domain.usecases.hotbed.IFindHotbedByCircleInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo

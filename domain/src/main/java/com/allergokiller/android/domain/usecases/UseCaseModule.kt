@@ -1,10 +1,10 @@
-package com.allergokiller.android.usecases
+package com.allergokiller.android.domain.usecases
 
-import com.allergokiller.android.data.gateway.IHotbedGateway
-import com.allergokiller.android.usecases.hotbed.AddHotbedInteractor
-import com.allergokiller.android.usecases.hotbed.FindHotbedByCircleInteractor
-import com.allergokiller.android.usecases.hotbed.IAddHotbedInteractor
-import com.allergokiller.android.usecases.hotbed.IFindHotbedByCircleInteractor
+import com.allergokiller.android.domain.gateway.IHotbedGateway
+import com.allergokiller.android.domain.usecases.hotbed.AddHotbedInteractor
+import com.allergokiller.android.domain.usecases.hotbed.FindHotbedByCircleInteractor
+import com.allergokiller.android.domain.usecases.hotbed.IAddHotbedInteractor
+import com.allergokiller.android.domain.usecases.hotbed.IFindHotbedByCircleInteractor
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler

@@ -1,7 +1,7 @@
-package com.allergokiller.android.usecases.hotbed
+package com.allergokiller.android.domain.usecases.hotbed
 
-import com.allergokiller.android.data.entity.Hotbed
-import com.allergokiller.android.data.gateway.IHotbedGateway
+import com.allergokiller.android.domain.entity.Hotbed
+import com.allergokiller.android.domain.gateway.IHotbedGateway
 import io.reactivex.Scheduler
 import io.reactivex.Single
 

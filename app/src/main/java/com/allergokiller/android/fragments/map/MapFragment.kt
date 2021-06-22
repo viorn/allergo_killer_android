@@ -100,8 +100,8 @@ class MapFragment : AFragment(), MapEventsReceiver {
         childFragmentManager.setFragmentResultListener(
             AddHotbedDialog.RESULT_REQUEST,
             viewLifecycleOwner
-        ) { s, b ->
-            val result = b.getParcelable<AddHotbedDialog.Result>("result")!!
+        ) { requestKey, bundle ->
+            val result = bundle.getParcelable<AddHotbedDialog.Result>("result")!!
             vm.addHotbed(result.title, result.description, lat = result.lat, lng = result.lng)
         }
     }
