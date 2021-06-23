@@ -1,7 +1,7 @@
 package com.allergokiller.android.datasource.rest
 
-import com.allergokiller.android.domain.datasource.rest.hotbed.RestAddNewHotbed
-import com.allergokiller.android.domain.datasource.rest.hotbed.RestGetHotbedByCircle
+import com.allergokiller.android.data.datasource.rest.hotbed.RestAddNewHotbed
+import com.allergokiller.android.data.datasource.rest.hotbed.RestGetHotbedByCircle
 import com.allergokiller.android.domain.entity.Hotbed
 import io.reactivex.Single
 import retrofit2.http.Body

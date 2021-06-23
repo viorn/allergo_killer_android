@@ -1,7 +1,7 @@
 package com.allergokiller.android.data.gateway
 
-import com.allergokiller.android.domain.datasource.rest.hotbed.RestAddNewHotbed
-import com.allergokiller.android.domain.datasource.rest.hotbed.RestGetHotbedByCircle
+import com.allergokiller.android.data.datasource.rest.hotbed.RestAddNewHotbed
+import com.allergokiller.android.data.datasource.rest.hotbed.RestGetHotbedByCircle
 import com.allergokiller.android.domain.entity.Hotbed
 import com.allergokiller.android.domain.gateway.IHotbedGateway
 import io.reactivex.Flowable
