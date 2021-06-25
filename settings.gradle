@@ -1,3 +1,5 @@
+include ':hotbedmap'
+include ':core'
 include ':data'
 include ':domain'
 include ':app'

@@ -2,12 +2,12 @@ package com.allergokiller.android.activities
 
 import android.os.Bundle
 import com.allergokiller.android.R
-import com.allergokiller.android.app.App
 import com.allergokiller.android.cicerone.Screens
+import com.allergokiller.core.RxActivity
 import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MainActivity : AActivity() {
+class MainActivity : RxActivity() {
     private val navigator by lazy { AppNavigator(this, R.id.main_container) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
